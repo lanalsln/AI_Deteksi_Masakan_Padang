@@ -1,0 +1,34 @@
+# ============ Virtual Environment ============
+venv/
+.env/
+.env.bak/
+.venv/
+
+# ============ Python Cache / Build Files ============
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.sqlite3
+*.db
+.DS_Store
+
+# ============ Model & Data Files ============
+models/saved_models/
+models/training_history.png
+models/confusion_matrix.png
+models/class_indices.json
+
+data/raw/
+data/processed/
+!data/processed/.gitkeep  # optional, if you want to keep folder structure
+
+# ============ Jupyter / VSCode / IDE ============
+.ipynb_checkpoints/
+.vscode/
+.idea/
+
+# ============ System Files ============
+Thumbs.db
+desktop.ini
