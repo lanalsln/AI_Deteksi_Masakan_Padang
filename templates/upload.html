@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>🍛 Deteksi Makanan Padang AI</title>
     <style>
+      /* --- (semua CSS kamu tetap, tidak diubah) --- */
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
-
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -20,7 +20,6 @@
         align-items: center;
         padding: 20px;
       }
-
       .container {
         background: white;
         padding: 40px;
@@ -29,21 +28,18 @@
         max-width: 600px;
         width: 100%;
       }
-
       h1 {
         color: #333;
         text-align: center;
         margin-bottom: 10px;
         font-size: 28px;
       }
-
       .subtitle {
         text-align: center;
         color: #666;
         margin-bottom: 30px;
         font-size: 14px;
       }
-
       .upload-area {
         border: 3px dashed #667eea;
         border-radius: 15px;
@@ -53,24 +49,20 @@
         transition: all 0.3s;
         background: #f8f9ff;
       }
-
       .upload-area:hover {
         background: #eef0ff;
         border-color: #764ba2;
         transform: translateY(-2px);
       }
-
       .upload-area p {
         color: #667eea;
         font-size: 16px;
         font-weight: 500;
       }
-
       .upload-icon {
         font-size: 48px;
         margin-bottom: 10px;
       }
-
       #preview {
         max-width: 100%;
         max-height: 400px;
@@ -79,11 +71,9 @@
         display: none;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
       }
-
       #results {
         margin-top: 20px;
       }
-
       .results-title {
         font-size: 20px;
         font-weight: bold;
@@ -91,7 +81,6 @@
         margin-bottom: 15px;
         text-align: center;
       }
-
       .prediction {
         background: linear-gradient(135deg, #f8f9ff 0%, #eef0ff 100%);
         padding: 15px 20px;
@@ -103,40 +92,33 @@
         transition: all 0.3s;
         border: 2px solid transparent;
       }
-
       .prediction:hover {
         transform: translateX(5px);
         border-color: #667eea;
       }
-
       .prediction:first-child {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
       }
-
       .prediction:first-child .confidence {
         color: white;
       }
-
       .prediction-rank {
         font-size: 24px;
         font-weight: bold;
         margin-right: 15px;
         opacity: 0.7;
       }
-
       .prediction-name {
         flex: 1;
         font-size: 18px;
         font-weight: 500;
       }
-
       .confidence {
         font-weight: bold;
         color: #667eea;
         font-size: 18px;
       }
-
       .confidence-bar {
         width: 100%;
         height: 6px;
@@ -145,14 +127,12 @@
         margin-top: 8px;
         overflow: hidden;
       }
-
       .confidence-fill {
         height: 100%;
         background: white;
         border-radius: 3px;
         transition: width 0.5s ease;
       }
-
       button {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
@@ -166,18 +146,15 @@
         margin-top: 20px;
         transition: all 0.3s;
       }
-
       button:hover {
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
       }
-
       button:disabled {
         opacity: 0.6;
         cursor: not-allowed;
         transform: none;
       }
-
       .loading {
         display: inline-block;
         width: 20px;
@@ -187,13 +164,11 @@
         border-top-color: white;
         animation: spin 1s ease-in-out infinite;
       }
-
       @keyframes spin {
         to {
           transform: rotate(360deg);
         }
       }
-
       .error {
         background: #fee;
         color: #c33;
@@ -202,7 +177,6 @@
         margin-top: 20px;
         text-align: center;
       }
-
       .info-box {
         background: #e3f2fd;
         border-left: 4px solid #2196f3;
@@ -212,8 +186,17 @@
         font-size: 14px;
         color: #1565c0;
       }
+      .feedback-buttons {
+        text-align: center;
+        margin-top: 20px;
+      }
+      .feedback-buttons button {
+        width: auto;
+        margin: 5px 10px;
+      }
     </style>
   </head>
+
   <body>
     <div class="container">
       <h1>🍛 Deteksi Makanan Padang</h1>
@@ -227,9 +210,9 @@
       >
         <div class="upload-icon">📸</div>
         <p>Klik atau drag & drop gambar di sini</p>
-        <small style="color: #999; display: block; margin-top: 10px">
-          Format: JPG, JPEG, PNG (Max: 16MB)
-        </small>
+        <small style="color: #999; display: block; margin-top: 10px"
+          >Format: JPG, JPEG, PNG (Max: 16MB)</small
+        >
         <input
           type="file"
           id="fileInput"
@@ -239,16 +222,21 @@
       </div>
 
       <img id="preview" alt="Preview" />
-
       <button onclick="uploadImage()" style="display: none" id="uploadBtn">
         🔍 Deteksi Makanan
       </button>
-
       <div id="results"></div>
+
+      <div class="feedback-buttons" id="feedbackSection" style="display: none">
+        <p>Apakah hasil prediksi ini benar?</p>
+        <button onclick="sendFeedback(true)">✅ Benar</button>
+        <button onclick="sendFeedback(false)">❌ Salah</button>
+        <div id="feedbackResponse" style="margin-top: 10px; color: #333"></div>
+      </div>
 
       <div class="info-box" style="display: none" id="infoBox">
         💡 <strong>Tips:</strong> Untuk hasil terbaik, gunakan foto yang jelas
-        dan fokus pada makanan
+        dan fokus pada makanan.
       </div>
     </div>
 
@@ -258,16 +246,18 @@
       const uploadBtn = document.getElementById("uploadBtn");
       const results = document.getElementById("results");
       const infoBox = document.getElementById("infoBox");
+      const feedbackSection = document.getElementById("feedbackSection");
+      const feedbackResponse = document.getElementById("feedbackResponse");
 
-      fileInput.addEventListener("change", function (e) {
+      let lastPrediction = null;
+
+      fileInput.addEventListener("change", (e) => {
         const file = e.target.files[0];
         if (file) {
-          // Cek ukuran file
           if (file.size > 16 * 1024 * 1024) {
             alert("⚠️ Ukuran file terlalu besar! Maksimal 16MB");
             return;
           }
-
           const reader = new FileReader();
           reader.onload = function (e) {
             preview.src = e.target.result;
@@ -275,6 +265,7 @@
             uploadBtn.style.display = "block";
             infoBox.style.display = "block";
             results.innerHTML = "";
+            feedbackSection.style.display = "none";
           };
           reader.readAsDataURL(file);
         }
@@ -282,33 +273,32 @@
 
       async function uploadImage() {
         const file = fileInput.files[0];
-        if (!file) {
-          alert("⚠️ Pilih gambar terlebih dahulu!");
-          return;
-        }
+        if (!file) return alert("⚠️ Pilih gambar terlebih dahulu!");
 
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("image", file);
 
         uploadBtn.innerHTML = '<span class="loading"></span> Mendeteksi...';
         uploadBtn.disabled = true;
         results.innerHTML = "";
+        feedbackSection.style.display = "none";
 
         try {
           const response = await fetch("/predict", {
             method: "POST",
             body: formData,
           });
-
           const data = await response.json();
 
           if (data.success) {
             displayResults(data.predictions);
+            lastPrediction = data.predictions[0].class;
+            feedbackSection.style.display = "block";
           } else {
             results.innerHTML = `<div class="error">❌ ${data.error}</div>`;
           }
-        } catch (error) {
-          results.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+        } catch (err) {
+          results.innerHTML = `<div class="error">❌ ${err.message}</div>`;
         }
 
         uploadBtn.innerHTML = "🔍 Deteksi Makanan";
@@ -317,64 +307,41 @@
 
       function displayResults(predictions) {
         results.innerHTML = '<div class="results-title">📊 Hasil Deteksi</div>';
-
-        predictions.forEach((pred, idx) => {
+        predictions.forEach((pred, i) => {
           const percentage = (pred.confidence * 100).toFixed(1);
-          const medal = idx === 0 ? "🥇" : idx === 1 ? "🥈" : "🥉";
-
-          const predDiv = document.createElement("div");
-          predDiv.className = "prediction";
-          predDiv.innerHTML = `
-                    <span class="prediction-rank">${medal}</span>
-                    <div style="flex: 1;">
-                        <div class="prediction-name">${pred.class}</div>
-                        ${
-                          idx === 0
-                            ? `<div class="confidence-bar"><div class="confidence-fill" style="width: ${percentage}%"></div></div>`
-                            : ""
-                        }
-                    </div>
-                    <span class="confidence">${percentage}%</span>
-                `;
-
-          results.appendChild(predDiv);
+          const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : "🥉";
+          results.innerHTML += `
+            <div class="prediction">
+              <span class="prediction-rank">${medal}</span>
+              <div style="flex:1">
+                <div class="prediction-name">${pred.class}</div>
+                ${
+                  i === 0
+                    ? `<div class="confidence-bar"><div class="confidence-fill" style="width:${percentage}%"></div></div>`
+                    : ""
+                }
+              </div>
+              <span class="confidence">${percentage}%</span>
+            </div>`;
         });
       }
 
-      // Drag and drop support
-      const uploadArea = document.querySelector(".upload-area");
-
-      ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
-        uploadArea.addEventListener(eventName, preventDefaults, false);
-      });
-
-      function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
+      async function sendFeedback(isCorrect) {
+        const correctLabel = !isCorrect
+          ? prompt("Masukkan label yang benar:")
+          : lastPrediction;
+        const response = await fetch("/feedback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            prediction: lastPrediction,
+            correct: isCorrect,
+            correct_label: correctLabel,
+          }),
+        });
+        const data = await response.json();
+        feedbackResponse.innerText = data.message;
       }
-
-      ["dragenter", "dragover"].forEach((eventName) => {
-        uploadArea.addEventListener(eventName, () => {
-          uploadArea.style.borderColor = "#764ba2";
-          uploadArea.style.background = "#eef0ff";
-        });
-      });
-
-      ["dragleave", "drop"].forEach((eventName) => {
-        uploadArea.addEventListener(eventName, () => {
-          uploadArea.style.borderColor = "#667eea";
-          uploadArea.style.background = "#f8f9ff";
-        });
-      });
-
-      uploadArea.addEventListener("drop", (e) => {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        fileInput.files = files;
-
-        const event = new Event("change");
-        fileInput.dispatchEvent(event);
-      });
     </script>
   </body>
 </html>

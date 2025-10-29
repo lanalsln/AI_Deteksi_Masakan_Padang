@@ -1,84 +1,52 @@
+# app/main.py
 from flask import Flask, render_template, request, jsonify
 import os
-from werkzeug.utils import secure_filename
-from utils.predict import load_model_and_classes, predict_image
+from validator import is_food_image
+from predictor import predict_food
+import traceback
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# Load model saat startup
-print("\n" + "="*50)
-print("🚀 STARTING FLASK APP")
-print("="*50)
-
-try:
-    print("\n📦 Loading AI model...")
-    model, idx_to_class = load_model_and_classes()
-    print("✅ Model loaded successfully!\n")
-    print("="*50)
-except Exception as e:
-    print(f"\n❌ ERROR: Gagal load model!")
-    print(f"   {str(e)}")
-    print("\n⚠️  Pastikan Anda sudah training model terlebih dahulu!")
-    print("   Jalankan: python models/train_model.py")
-    print("="*50 + "\n")
-    exit(1)
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-@app.route('/')
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("upload.html")
 
-@app.route('/predict', methods=['POST'])
+@app.route("/predict", methods=["POST"])
 def predict():
-    print("\n📸 Menerima request prediksi...")
-    
-    if 'file' not in request.files:
-        print("❌ Tidak ada file yang diupload")
-        return jsonify({'error': 'No file uploaded'}), 400
-    
-    file = request.files['file']
-    
-    if file.filename == '':
-        print("❌ File kosong")
-        return jsonify({'error': 'No file selected'}), 400
-    
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
-        
-        print(f"💾 File disimpan: {filename}")
-        print("🤖 Memproses prediksi...")
-        
-        try:
-            # Prediksi
-            results = predict_image(filepath, model, idx_to_class)
-            
-            print("✅ Prediksi berhasil!")
-            print(f"   Top prediction: {results[0]['class']} ({results[0]['confidence']*100:.2f}%)")
-            
-            return jsonify({
-                'success': True,
-                'predictions': results,
-                'image_url': f'/static/uploads/{filename}'
-            })
-        except Exception as e:
-            print(f"❌ Error saat prediksi: {str(e)}")
-            return jsonify({'error': f'Prediction error: {str(e)}'}), 500
-    
-    print("❌ Tipe file tidak valid")
-    return jsonify({'error': 'Invalid file type. Gunakan JPG, JPEG, atau PNG'}), 400
+    try:
+        image = request.files.get("image")
+        if not image:
+            return jsonify({"success": False, "error": "Tidak ada gambar diunggah."})
 
-if __name__ == '__main__':
-    # Buat folder upload jika belum ada
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    
-    print("\n🌐 Server berjalan di: http://127.0.0.1:5000")
-    print("   Tekan CTRL+C untuk stop\n")
-    
-    app.run(debug=True, host='0.0.0.0', port=5000)
+        img_path = os.path.join(UPLOAD_FOLDER, image.filename)
+        image.save(img_path)
+        print(f"📸 Mengunggah gambar: {img_path}")
+
+        # 1️⃣ Validasi dengan Gemini
+        if not is_food_image(img_path):
+            return jsonify({
+                "success": True,
+                "predictions": [{"class": "Bukan makanan", "confidence": 1.0}]
+            })
+
+        # 2️⃣ Prediksi model lokal
+        pred = predict_food(img_path)
+        if not pred:
+            return jsonify({"success": False, "error": "Gagal memprediksi makanan."})
+
+        predictions = [
+            {"class": pred["class"], "confidence": pred["confidence"]}
+        ]
+
+        return jsonify({"success": True, "predictions": predictions})
+
+    except Exception as e:
+        print("❌ ERROR:", e)
+        print(traceback.format_exc())
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
