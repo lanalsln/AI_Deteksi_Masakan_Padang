@@ -1,0 +1,9 @@
+Thu Oct 30 17:06:41 2025 | pred=gulai_ikan | correct=True | correct_label=gulai_ikan
+Thu Oct 30 17:09:24 2025 | pred=gulai_ikan | correct=False | correct_label=None
+Thu Oct 30 17:18:15 2025 | pred=Bukan makanan | correct=True | label=Bukan makanan
+Thu Oct 30 17:19:39 2025 | pred=gulai_ikan | correct=True | label=gulai_ikan
+Thu Oct 30 17:19:40 2025 | pred=gulai_ikan | correct=True | label=gulai_ikan
+Thu Oct 30 17:19:40 2025 | pred=gulai_ikan | correct=True | label=gulai_ikan
+Thu Oct 30 17:19:40 2025 | pred=gulai_ikan | correct=True | label=gulai_ikan
+Thu Oct 30 17:19:40 2025 | pred=gulai_ikan | correct=True | label=gulai_ikan
+Thu Oct 30 17:19:41 2025 | pred=gulai_ikan | correct=True | label=gulai_ikan
